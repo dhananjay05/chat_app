@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="6dp"
+        android:padding="12dp">
+
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/profile_photo_iv"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:layout_alignParentStart="true"
+            android:layout_centerVertical="true"
+            android:src="@drawable/ic_whatsapp_logo"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@id/username_tv"
+            app:layout_constraintBottom_toBottomOf="@id/recent_msg_tv" />
+
+
+        <TextView
+            android:id="@+id/username_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="12dp"
+            android:textColor="@color/black"
+            app:layout_constraintStart_toEndOf="@id/profile_photo_iv"
+            app:layout_constraintTop_toTopOf="@id/profile_photo_iv"
+            tools:text="my name" />
+
+        <TextView
+            android:id="@+id/recent_msg_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            app:layout_constraintStart_toStartOf="@id/username_tv"
+            app:layout_constraintTop_toBottomOf="@id/username_tv"
+            tools:text="recent msg" />
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>
