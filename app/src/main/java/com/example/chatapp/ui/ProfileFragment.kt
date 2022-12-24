@@ -1,3 +1,5 @@
+@file:Suppress("OverrideDeprecatedMigration")
+
 package com.example.chatapp.ui
 
 import android.app.AlertDialog
@@ -13,6 +15,7 @@ import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.storage.FirebaseStorage
 import java.util.*
 
+@Suppress("OverrideDeprecatedMigration")
 class ProfileFragment : BaseFragmentWithBinding<FragmentProfileBinding>() {
 
     private lateinit var auth: FirebaseAuth
@@ -38,7 +41,7 @@ class ProfileFragment : BaseFragmentWithBinding<FragmentProfileBinding>() {
             intent.type = "image"
             startActivityForResult(intent, 1)
         }
-
+/*
         binding.btnContinue.setOnClickListener {
             if (binding.nameTxv.text.isEmpty()) {
                 Toast.makeText(context, "Please enter your name !!", Toast.LENGTH_LONG).show()
@@ -48,8 +51,12 @@ class ProfileFragment : BaseFragmentWithBinding<FragmentProfileBinding>() {
                 uploadData()
             }
         }
+
+
+ */
     }
 
+    /*
     fun uploadData() {
         val reference = storage.reference.child("Profile").child(Date().time.toString())
         reference.putFile(selectedImg).addOnCompleteListener {
@@ -60,7 +67,7 @@ class ProfileFragment : BaseFragmentWithBinding<FragmentProfileBinding>() {
             }
         }
     }
-
+*/
     fun uploadInfo(imgUrl: String) {
 
         val user = UserDto(auth.uid.toString(), binding.nameTxv.toString(), auth.currentUser?.phoneNumber.toString(), imgUrl)
@@ -69,7 +76,7 @@ class ProfileFragment : BaseFragmentWithBinding<FragmentProfileBinding>() {
             .setValue(user)
             .addOnSuccessListener {
                 Toast.makeText(context, "Data inserted successfully !!", Toast.LENGTH_LONG).show()
-                startActivity(Intent(this, ))
+//                startActivity(Intent(this, ))
                 //MainActivity Handling
             }
     }

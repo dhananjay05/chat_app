@@ -37,7 +37,7 @@ class OTPFragment : BaseFragmentWithBinding<FragmentOtpBinding>() {
         val options = PhoneAuthOptions.newBuilder(auth)
             .setPhoneNumber(phoneNumber)
             .setTimeout(60L, TimeUnit.SECONDS)
-            .setActivity(this)
+            .setActivity(requireActivity())
             .setCallbacks(object : PhoneAuthProvider.OnVerificationStateChangedCallbacks(){
                 override fun onVerificationCompleted(p0: PhoneAuthCredential) {
 
@@ -59,7 +59,7 @@ class OTPFragment : BaseFragmentWithBinding<FragmentOtpBinding>() {
         PhoneAuthProvider.verifyPhoneNumber(options)
 
         binding.btnContinue.setOnClickListener {
-            if (binding.otpEdt.text.isEmpty()) {
+            if (binding.otpEdt.text!!.isEmpty()) {
                 Toast.makeText(context, "Please enter otp", Toast.LENGTH_LONG).show()
             } else {
                 dialog.show()

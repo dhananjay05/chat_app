@@ -6,7 +6,7 @@ buildscript {
     }
     dependencies {
         classpath "com.android.tools.build:gradle:7.0.4"
-        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:1.5.20"
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:1.7.10"
         classpath 'com.google.gms:google-services:4.3.13'
 //        implementation com.google.android.play:integrity::LATEST_VERSION
 //        https://youtu.be/9W5N-h1btms?list=PL6Rs84MkNq7lC7NitsR5fsi8rZLZaMppa
