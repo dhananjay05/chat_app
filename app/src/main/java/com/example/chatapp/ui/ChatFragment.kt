@@ -1,59 +1,69 @@
 package com.example.chatapp.ui
 
 import android.os.Bundle
-import android.os.Message
-import android.text.TextUtils
-import android.widget.Toast
-import androidx.core.text.trimmedLength
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import com.example.chatapp.R
+import com.example.chatapp.adapter.ChatAdapter
+import com.example.chatapp.base.BaseFragmentWithBinding
 import com.example.chatapp.databinding.FragmentChatBinding
+import com.example.chatapp.model.UserDto
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
-import java.util.*
+import com.google.firebase.database.ValueEventListener
 
 class ChatFragment : BaseFragmentWithBinding<FragmentChatBinding>() {
 
-    private lateinit var db: FirebaseDatabase
-    private lateinit var senderUid: String
-    private lateinit var receiverUid: String
+    private var db: FirebaseDatabase? = null
+    lateinit var userList: ArrayList<UserDto>
 
-    private lateinit var senderRoom: String
-    private lateinit var receiverRoom: String
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-
-        senderUid = FirebaseAuth.getInstance().uid.toString()
-        receiverUid = FirebaseAuth.getInstance().uid.toString()
-
-        //get uid paramter
-
-        senderRoom = senderUid + receiverUid
-        receiverRoom = receiverUid + senderUid
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
 
         db = FirebaseDatabase.getInstance()
+        userList = ArrayList()
 
-        binding.sendBtn.setOnClickListener {
-            val msg = binding.msgEdt.text.toString()
+        db?.reference?.child("users")
+            ?.addValueEventListener(object : ValueEventListener {
+                override fun onDataChange(snapshot: DataSnapshot) {
+                    userList.clear()
 
-            if (TextUtils.isEmpty(msg)) {
-                Toast.makeText(context, "Please enter your messgae", Toast.LENGTH_LONG).show()
-            } else {
-                val currMsg = com.example.chatapp.model.Message(msg, senderUid, Date().time)
-
-                val randomKey = db.reference.push().key
-                db.reference.child("chats")
-                    .child(senderRoom).child(msg).child(randomKey!!).setValue(msg).addOnSuccessListener {
-                        db.reference.child("chats").child(receiverRoom).child(msg).child(randomKey!!).setValue(msg).addOnSuccessListener {
-                            binding.msgEdt.text = null
+                    for (itemSnapshot in snapshot.children) {
+                        val user = itemSnapshot.getValue(UserDto::class.java)
+                        if (user?.uId != FirebaseAuth.getInstance().uid) {
+                            user?.let { userList.add(it) }
                         }
                     }
-            }
-        }
+
+                    binding.chatsRv.adapter = ChatAdapter(userList)
+                }
+
+                override fun onCancelled(error: DatabaseError) {
+                    TODO("Not yet implemented")
+                }
+
+
+            })
+        return super.onCreateView(inflater, container, savedInstanceState)
     }
 
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+    }
+
+    override fun getFragLayout(): Int {
+        return R.layout.fragment_chat
+    }
+
+    companion object {
+        fun newInstance(): ChatFragment {
+            return ChatFragment()
+        }
+    }
 }
-
-/*
-why is it blanking the editext in materialcardview thing man
-
- */

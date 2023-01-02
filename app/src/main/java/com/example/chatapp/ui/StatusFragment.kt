@@ -1,24 +1,18 @@
 package com.example.chatapp.ui
 
-import android.os.Bundle
-import androidx.fragment.app.Fragment
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
 import com.example.chatapp.R
+import com.example.chatapp.base.BaseFragmentWithBinding
+import com.example.chatapp.databinding.FragmentStatusBinding
 
-class StatusFragment : Fragment() {
+class StatusFragment : BaseFragmentWithBinding<FragmentStatusBinding>() {
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-
+    companion object {
+        fun newInstance(): StatusFragment {
+            return StatusFragment()
+        }
     }
 
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_status, container, false)
+    override fun getFragLayout(): Int {
+        return R.layout.fragment_status
     }
 }

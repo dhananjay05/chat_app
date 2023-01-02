@@ -4,6 +4,10 @@ import android.app.AlertDialog
 import android.os.Bundle
 import android.view.View
 import android.widget.Toast
+import androidx.navigation.fragment.findNavController
+import androidx.navigation.fragment.navArgs
+import com.example.chatapp.R
+import com.example.chatapp.base.BaseFragmentWithBinding
 import com.example.chatapp.databinding.FragmentOtpBinding
 import com.google.firebase.FirebaseException
 import com.google.firebase.auth.FirebaseAuth
@@ -17,6 +21,7 @@ class OTPFragment : BaseFragmentWithBinding<FragmentOtpBinding>() {
     private lateinit var auth: FirebaseAuth
     private lateinit var verificationId: String
     private lateinit var dialog: AlertDialog
+    val args: OTPFragmentArgs by navArgs()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -31,8 +36,7 @@ class OTPFragment : BaseFragmentWithBinding<FragmentOtpBinding>() {
         dialog = builder.create()
         dialog.show()
 
-        val phoneNumber = "kdfndf"
-        //fetch phone number from user via navargs
+        val phoneNumber = "+91" + args.mobileNumber
 
         val options = PhoneAuthOptions.newBuilder(auth)
             .setPhoneNumber(phoneNumber)
@@ -44,7 +48,8 @@ class OTPFragment : BaseFragmentWithBinding<FragmentOtpBinding>() {
                 }
 
                 override fun onVerificationFailed(p0: FirebaseException) {
-                    Toast.makeText(activity, "Please try again !!", Toast.LENGTH_LONG).show()
+                    dialog.dismiss()
+                    Toast.makeText(requireActivity(), "Please try again !!", Toast.LENGTH_LONG).show()
                 }
 
                 override fun onCodeSent(p0: String, p1: PhoneAuthProvider.ForceResendingToken) {
@@ -69,8 +74,7 @@ class OTPFragment : BaseFragmentWithBinding<FragmentOtpBinding>() {
                     .addOnCompleteListener {
                         dialog.dismiss()
                         if (it.isSuccessful) {
-                            //send to profile activity or whatever the fuck it is
-
+                            navigateToProfileSetup()
                         } else {
                             Toast.makeText(context, "Error: ${it.exception}", Toast.LENGTH_LONG).show()
                         }
@@ -78,6 +82,14 @@ class OTPFragment : BaseFragmentWithBinding<FragmentOtpBinding>() {
             }
         }
 
+    }
 
+    private fun navigateToProfileSetup() {
+        findNavController().navigate(R.id.action_OTPFragment_to_profileFragment)
+    }
+
+
+    override fun getFragLayout(): Int {
+        return R.layout.fragment_otp
     }
 }

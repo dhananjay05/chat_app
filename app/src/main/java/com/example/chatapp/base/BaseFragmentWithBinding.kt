@@ -1,4 +1,4 @@
-package com.example.chatapp.ui
+package com.example.chatapp.base
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -17,7 +17,11 @@ abstract class BaseFragmentWithBinding<T : ViewDataBinding> : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        binding = DataBindingUtil.inflate(layoutInflater, 0, container, false)
+        binding = DataBindingUtil.inflate(inflater, getFragLayout(), container, false)
         return binding.root
+    }
+
+    open fun getFragLayout(): Int {
+        return 0
     }
 }

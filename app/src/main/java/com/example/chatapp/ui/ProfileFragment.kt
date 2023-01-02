@@ -6,8 +6,13 @@ import android.app.AlertDialog
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import android.text.TextUtils
 import android.view.View
 import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.navigation.fragment.findNavController
+import com.example.chatapp.R
+import com.example.chatapp.base.BaseFragmentWithBinding
 import com.example.chatapp.databinding.FragmentProfileBinding
 import com.example.chatapp.model.UserDto
 import com.google.firebase.auth.FirebaseAuth
@@ -15,7 +20,6 @@ import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.storage.FirebaseStorage
 import java.util.*
 
-@Suppress("OverrideDeprecatedMigration")
 class ProfileFragment : BaseFragmentWithBinding<FragmentProfileBinding>() {
 
     private lateinit var auth: FirebaseAuth
@@ -35,39 +39,42 @@ class ProfileFragment : BaseFragmentWithBinding<FragmentProfileBinding>() {
         storage = FirebaseStorage.getInstance()
         auth = FirebaseAuth.getInstance()
 
-        binding.userImg.setOnClickListener {
-            val intent = Intent()
-            intent.action = Intent.ACTION_GET_CONTENT
-            intent.type = "image"
-            startActivityForResult(intent, 1)
+        val loadImage = registerForActivityResult(ActivityResultContracts.GetContent()
+        ) {
+            binding.userImg.setImageURI(it)
+            if (it != null) {
+                selectedImg = it
+            }
         }
-/*
+
+        binding.userImg.setOnClickListener {
+            loadImage.launch("image/*")
+        }
+
         binding.btnContinue.setOnClickListener {
-            if (binding.nameTxv.text.isEmpty()) {
+            val name = binding.nameTxv.text.toString()
+            if (TextUtils.isEmpty(name)) {
                 Toast.makeText(context, "Please enter your name !!", Toast.LENGTH_LONG).show()
-            } else if (selectedImg == null) {
-                Toast.makeText(context, "Please select your image !!", Toast.LENGTH_LONG).show()
             } else {
                 uploadData()
             }
         }
 
-
- */
     }
 
-    /*
     fun uploadData() {
         val reference = storage.reference.child("Profile").child(Date().time.toString())
-        reference.putFile(selectedImg).addOnCompleteListener {
-            if (it.isSuccessful) {
-                reference.downloadUrl.addOnSuccessListener {
-                    uploadInfo(task.toString())
+        if (this::selectedImg.isInitialized) {
+            reference.putFile(selectedImg).addOnCompleteListener {
+                if (it.isSuccessful) {
+                    reference.downloadUrl.addOnSuccessListener { task ->
+                        uploadInfo(task.toString())
+                    }
                 }
             }
         }
     }
-*/
+
     fun uploadInfo(imgUrl: String) {
 
         val user = UserDto(auth.uid.toString(), binding.nameTxv.toString(), auth.currentUser?.phoneNumber.toString(), imgUrl)
@@ -76,18 +83,12 @@ class ProfileFragment : BaseFragmentWithBinding<FragmentProfileBinding>() {
             .setValue(user)
             .addOnSuccessListener {
                 Toast.makeText(context, "Data inserted successfully !!", Toast.LENGTH_LONG).show()
-//                startActivity(Intent(this, ))
-                //MainActivity Handling
+                findNavController().navigate(R.id.action_profileFragment_to_homeFragment)
             }
+
     }
 
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-
-        if (data != null && data.data != null) {
-            selectedImg = data.data!!
-
-            binding.userImg.setImageURI(selectedImg)
-        }
+    override fun getFragLayout(): Int {
+        return R.layout.fragment_profile
     }
 }

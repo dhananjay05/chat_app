@@ -1,15 +1,16 @@
 package com.example.chatapp.adapter
 
-import android.content.Context
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.navigation.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.chatapp.databinding.LayoutChatItemBinding
 import com.example.chatapp.model.UserDto
+import com.example.chatapp.ui.HomeFragmentDirections
 import java.util.*
 
-class ChatAdapter(var context: Context, var list: ArrayList<UserDto>) :
+class ChatAdapter(var list: ArrayList<UserDto>) :
     RecyclerView.Adapter<ChatAdapter.ChatViewHolder>() {
 
     inner class ChatViewHolder(val binding: LayoutChatItemBinding) : RecyclerView.ViewHolder(binding.root)
@@ -26,11 +27,12 @@ class ChatAdapter(var context: Context, var list: ArrayList<UserDto>) :
     override fun onBindViewHolder(holder: ChatViewHolder, position: Int) {
 
         val user = list[position]
-        Glide.with(context).load(user.imgUrl).into(holder.binding.profilePhotoIv)
+        Glide.with(holder.itemView.context).load(user.imgUrl).into(holder.binding.profilePhotoIv)
         holder.binding.usernameTv.text = user.name
 
         holder.itemView.setOnClickListener {
-            //open chatfragment using jetpack navigation
+            val action = HomeFragmentDirections.actionHomeFragmentToInduvChatFragment(userId = user.uId.toString())
+            holder.itemView.findNavController().navigate(action)
         }
     }
 
